@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { addContactAction } from 'store/slices/contacts/slice.js';
 import { contactsSelector } from './../../store/selectors';
+import { addContact } from 'store/operations';
 
 export const ContactForm = () => {
   const contactsState = useSelector(contactsSelector);
@@ -23,7 +23,7 @@ export const ContactForm = () => {
 
     const newContact = { name, number };
 
-    dispatch(addContactAction(newContact));
+    dispatch(addContact(newContact));
 
     e.target.name.value = '';
     e.target.number.value = '';

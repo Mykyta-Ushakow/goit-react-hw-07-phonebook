@@ -1,18 +1,40 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Contact } from '../Contact/Contact';
-import { contactsSelector, filterSelector } from 'store/selectors';
+import {
+  contactsErrorSelector,
+  contactsLoadingSelector,
+  contactsSelector,
+  filterSelector,
+} from 'store/selectors';
+import { useEffect } from 'react';
+import { fetchContacts } from 'store/operations';
 
 export const ContactList = () => {
-  const filterState = useSelector(filterSelector);
-  const contactsState = useSelector(contactsSelector);
+  const dispatch = useDispatch();
 
-  const filteredContacts = contactsState.length
-    ? contactsState.filter(contact =>
+  const filterState = useSelector(filterSelector);
+  const contacts = useSelector(contactsSelector);
+
+  const isLoading = useSelector(contactsLoadingSelector);
+  const error = useSelector(contactsErrorSelector);
+
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
+
+  const filteredContacts = contacts.length
+    ? contacts.filter(contact =>
         contact.name.toLowerCase().includes(filterState.toLowerCase())
       )
     : [];
+  /* {isLoading && <b>Loading contacts...</b>}
+    {error && <b>{error}</b>} */
 
-  return (
+  return isLoading ? (
+    <b>Loading contacts...</b>
+  ) : error ? (
+    <b>Error has occured: {error}</b>
+  ) : (
     <ul>
       {filteredContacts.length !== 0 ? (
         filteredContacts.map(contact => (
@@ -20,6 +42,7 @@ export const ContactList = () => {
             name={contact.name}
             number={contact.number}
             key={contact.id}
+            dataid={contact.id}
           />
         ))
       ) : (

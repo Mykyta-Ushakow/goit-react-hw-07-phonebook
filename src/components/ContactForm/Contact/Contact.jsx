@@ -1,23 +1,22 @@
 import { useDispatch } from 'react-redux';
-import { removeContactAction } from 'store/slices/contacts/slice';
+import { deleteContact } from 'store/operations';
 
 export const Contact = props => {
   const dispatch = useDispatch();
 
   function handleDelete(e) {
-    const nameToDelete = e.target.parentNode.firstChild.textContent.slice(
-      0,
-      -2
-    );
+    const idToDelete = Number(e.target.attributes.dataid.value);
 
-    dispatch(removeContactAction(nameToDelete));
+    dispatch(deleteContact(idToDelete));
   }
 
   return (
-    <li key={props.id}>
+    <li>
       <p>{props.name}: </p>
       <p>{props.number}</p>
-      <button onClick={handleDelete}>Delete</button>
+      <button dataid={props.dataid} onClick={handleDelete}>
+        Delete
+      </button>
     </li>
   );
 };
